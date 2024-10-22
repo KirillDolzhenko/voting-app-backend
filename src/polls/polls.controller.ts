@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
 import { PollsService } from './polls.service';
 import { PollDto, SelectedOptionDto } from './dto/polls.dto';
 

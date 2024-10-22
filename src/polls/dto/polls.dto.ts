@@ -1,4 +1,4 @@
-import { IsArray, IsInt, IsNumber, IsString } from 'class-validator';
+import { IsInt, IsNumber, IsString } from 'class-validator';
 
 export class PageNumberDto {
   @IsInt()

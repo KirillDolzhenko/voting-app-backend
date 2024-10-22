@@ -1,6 +1,6 @@
-import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import { DbService } from 'src/db/db.service';
-import { PollDto, SelectedOptionDto } from './dto/polls.dto';
+import { PollDto } from './dto/polls.dto';
 import { selectOption } from './select/db.select';
 
 @Injectable()
@@ -9,7 +9,7 @@ export class PollsService {
 
   async getAll() {
     try {
-      let polls = await this.db.poll.findMany({
+      const polls = await this.db.poll.findMany({
         where: {},
         include: {
           options: {
@@ -32,7 +32,7 @@ export class PollsService {
 
   async setVote(id: number, idPoll: number) {
     try {
-      let votePollId = await this.db.option.findUnique({
+      const votePollId = await this.db.option.findUnique({
         where: {
           id,
         },
@@ -42,7 +42,7 @@ export class PollsService {
       });
 
       if (votePollId.pollId === idPoll) {
-        let vote = await this.db.option.update({
+        const vote = await this.db.option.update({
           where: {
             id,
           },
@@ -64,9 +64,7 @@ export class PollsService {
 
   async postPoll(dto: PollDto) {
     try {
-      let number = dto.options.length;
-
-      let poll = await this.db.poll.create({
+      const poll = await this.db.poll.create({
         data: {
           title: dto.title,
           options: {
@@ -95,7 +93,7 @@ export class PollsService {
 
   async deletePoll(id: number) {
     try {
-      let poll = this.db.poll.delete({
+      const poll = this.db.poll.delete({
         where: {
           id,
         },
