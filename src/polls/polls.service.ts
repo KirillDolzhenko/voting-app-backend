@@ -1,4 +1,4 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { DbService } from 'src/db/db.service';
 import { PollDto } from './dto/polls.dto';
 import { selectOption } from './select/db.select';
@@ -7,7 +7,7 @@ import { selectOption } from './select/db.select';
 export class PollsService {
   constructor(private readonly db: DbService) {}
 
-  async getAll() {
+  async getMany(page: number = 0) {
     try {
       const polls = await this.db.poll.findMany({
         where: {},
@@ -21,12 +21,47 @@ export class PollsService {
         orderBy: {
           createdAt: 'desc',
         },
+        skip: 10 * page,
         take: 10,
       });
 
-      return polls;
+      if (polls) {
+        return polls;
+      } else {
+        return [];
+      }
+
+      // throw new ForbiddenException();
     } catch (error) {
       throw new ForbiddenException();
+    }
+  }
+
+  async getOne(id: number) {
+    try {
+      const poll = await this.db.poll.findUnique({
+        where: {
+          id,
+        },
+        include: {
+          options: {
+            select: {
+              ...selectOption,
+            },
+            orderBy: {
+              id: 'desc',
+            },
+          },
+        },
+      });
+
+      if (poll) {
+        return poll;
+      }
+
+      throw new NotFoundException();
+    } catch (error) {
+      throw new NotFoundException();
     }
   }
 
@@ -41,7 +76,7 @@ export class PollsService {
         },
       });
 
-      if (votePollId.pollId === idPoll) {
+      if (votePollId && votePollId.pollId === idPoll) {
         const vote = await this.db.option.update({
           where: {
             id,
@@ -84,9 +119,12 @@ export class PollsService {
         },
       });
 
-      return poll;
+      if (poll) {
+        return poll;
+      }
+
+      throw new ForbiddenException();
     } catch (error) {
-      console.log(error);
       throw new ForbiddenException();
     }
   }
@@ -99,9 +137,12 @@ export class PollsService {
         },
       });
 
-      return poll;
+      if (poll) {
+        return poll;
+      }
+
+      throw new ForbiddenException();
     } catch (error) {
-      console.log(error);
       throw new ForbiddenException();
     }
   }

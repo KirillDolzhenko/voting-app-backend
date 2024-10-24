@@ -31,6 +31,7 @@ model Option {
   
   text String
   votes Int @default(0)
+  
   poll Poll? @relation("PollOption", fields: [pollId], references: [id], onDelete: Cascade)
   pollId Int?
 }

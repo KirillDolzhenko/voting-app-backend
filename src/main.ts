@@ -9,11 +9,10 @@ async function bootstrap() {
 
   app.useGlobalPipes(new ValidationPipe());
   app.setGlobalPrefix('api');
+  app.enableCors();
 
   const config: IConfigData = app.get<ConfigService>(ConfigService).get('config');
 
   await app.listen(config.server.port);
-
-  console.log(config);
 }
 bootstrap();

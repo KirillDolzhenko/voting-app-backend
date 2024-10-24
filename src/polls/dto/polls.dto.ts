@@ -1,4 +1,4 @@
-import { IsInt, IsNumber, IsString } from 'class-validator';
+import { IsInt, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class PageNumberDto {
   @IsInt()
@@ -16,4 +16,10 @@ export class PollDto {
 
   @IsString({ each: true })
   options: string[];
+}
+
+export class PageDto {
+  @IsNumber()
+  @IsOptional()
+  page?: number;
 }

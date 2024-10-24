@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, Query } from '@nestjs/common';
 import { PollsService } from './polls.service';
 import { PollDto, SelectedOptionDto } from './dto/polls.dto';
 
@@ -7,8 +7,8 @@ export class PollsController {
   constructor(private readonly pollsService: PollsService) {}
 
   @Get()
-  async getAll() {
-    return await this.pollsService.getAll();
+  async getMany(@Query('page') page: number) {
+    return await this.pollsService.getMany(page);
   }
 
   @Post()
@@ -24,5 +24,10 @@ export class PollsController {
   @Delete(':id')
   async findOne(@Param('id') id: string) {
     return await this.pollsService.deletePoll(Number(id));
+  }
+
+  @Get(':id')
+  async getOne(@Param('id') id: string) {
+    return await this.pollsService.getOne(Number(id));
   }
 }
