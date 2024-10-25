@@ -99,31 +99,34 @@ export class PollsService {
 
   async postPoll(dto: PollDto) {
     try {
-      const poll = await this.db.poll.create({
-        data: {
-          title: dto.title,
-          options: {
-            createMany: {
-              data: dto.options.map((el) => ({
-                text: el,
-              })),
+      if (dto.options.length >= 2) {
+        const poll = await this.db.poll.create({
+          data: {
+            title: dto.title,
+            options: {
+              createMany: {
+                data: dto.options.map((el) => ({
+                  text: el,
+                })),
+              },
             },
           },
-        },
-        include: {
-          options: {
-            select: {
-              ...selectOption,
+          include: {
+            options: {
+              select: {
+                ...selectOption,
+              },
             },
           },
-        },
-      });
+        });
 
-      if (poll) {
-        return poll;
+        if (poll) {
+          return poll;
+        }
+        throw new ForbiddenException('Произошла ошибка');
+      } else {
+        throw new ForbiddenException('Передано недостаточно вариантов ответа');
       }
-
-      throw new ForbiddenException();
     } catch (error) {
       throw new ForbiddenException();
     }
